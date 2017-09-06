@@ -1,9 +1,10 @@
 var foundData = false;
 var certificates;
+var selectionArray = [];
 
 $("document").ready(function() {
-  $("#main").append("<h3 id='delete'>Loading...</h3>");
-  $.get("https://raw.githubusercontent.com/jczhu/recourse-333/final/certificates.json", function(data, status){
+  $("#results").append("<h3 id='delete'>Loading...</h3>");
+  $.get("https://raw.githubusercontent.com/blucheez/courseoverlap/master/reqs.json", function(data, status){
         $("#delete").remove();
         foundData = true;
         certificates = JSON.parse(data);
@@ -18,7 +19,7 @@ $("document").ready(function() {
 function find(infoarray, terms) {
   var alreadyFound = [];
   for(var cert = 0; cert < infoarray.length; cert++) {
-    //check if the certificate is withing the query
+    //check if the certificate is within the query
     var desired = false;
     for(var i = 0; i < terms.length; i++) {
       if(infoarray[cert].name === terms[i]) {
@@ -76,6 +77,7 @@ function combineArray(array1, array2) {
 
 // @ param an array of objects with a string "name" parameter, an integer "hits" parameter, and string array "fulfillments" parameter
 // @ param a string indicating destination using jquery syntax
+// prints out the array
 
 function printArr(infoarray, destination) {
   for(var i = 0; i < infoarray.length; i++) {
@@ -86,19 +88,50 @@ function printArr(infoarray, destination) {
   }
 }
 
+function check(ele) {
+    if(event.keyCode == 13) {
+        add();
+    }
+}
+
+
 // @ param an array of objects each containing a string parameter titled "name" and a string array parameter titled "courses"
 // @ param a string indicating destination using jquery syntax
 // creates options to select the listed courses
 function createMenu(infoarray, destination) {
-  
+  $(destination).append("<input onkeydown='check(this)' id='bar' list='certs'><datalist id='certs'>");
   for(var i = 0; i < infoarray.length; i++) {
-    $(destination).append("<div class='choice'><label><input name='certificate' value = '"+ infoarray[i].name +"' type='checkbox'> " + infoarray[i].name + "</label></div>");
+      $("#certs").append("<option value='" + infoarray[i].name + "'>");
+      //    $(destination).append("<div class='choice'><label><input name='certificate' value = '"+ infoarray[i].name +"' type='checkbox'> " + infoarray[i].name + "</label></div>");
   }
-  $(destination).append("<button id='search' onclick='search()'>Search</button>");
+    
+  $(destination).append("</datalist><button onclick='add()'>Add</button><div id='selections'></div>");
+    
+    
 }
+
+
+function add() {
+    $('#selections').append($('#bar').val() + "<br>");
+    selectionArray.push($('#bar').val());
+    $('#bar').val('');
+    search();
+}
+
+
 
 function search() {
-  $("#main").html("");
-  printArr(find(certificates, $('input:checkbox:checked').map(function(){return this.value;}).get()), "#main");
+console.log("searching");
+  $("#results").html("");
+  printArr(find(certificates, selectionArray), "#results");
 }
 
+function clear() {
+    console.log("clearing");
+    $("#selections").empty();
+}
+
+$("#clrbtn").click(function() {
+    console.log("clearing");
+    $("#selections").empty();
+})
