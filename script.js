@@ -81,10 +81,7 @@ function combineArray(array1, array2) {
 
 function printArr(infoarray, destination) {
   for(var i = 0; i < infoarray.length; i++) {
-    $(destination).append("<p>" + infoarray[i].name + "</p>");
-    $(destination).append("<p>" + infoarray[i].hits + "</p>");
-    $(destination).append("<p>" + infoarray[i].fulfillments + "</p>");
-    $(destination).append("<br><br>");
+    $(destination).append('<br><div style="margin: 0 auto" class="mdl-card  mdl-shadow--4dp"><div class="mdl-card__title"><h2 class="mdl-card__title-text">' + infoarray[i].name + '</h2></div><div class="mdl-card__supporting-text">' + infoarray[i].hits + '<br>' + "<p>" + infoarray[i].fulfillments + "</p>" + "</div></div><br>");
   }
 }
 
